@@ -22,8 +22,9 @@ async function saveAudioToFile(audioStream, filePath) {
 
 export const textToSpeech = async (req, res, next, text) => {
   try {
-    
+
     const audioStream = await elevenlabs.generate({
+      stream: true,
       voice: "Rachel",
       text: text,
       model_id: "eleven_multilingual_v2"
@@ -32,7 +33,7 @@ export const textToSpeech = async (req, res, next, text) => {
     const filePath = `/uploads/${Date.now()}.mp3`;
 
     // Write the audio content to a file
-    await saveAudioToFile(audioStream,"." + filePath);
+    await saveAudioToFile(audioStream, "." + filePath);
 
     console.log("Audio saved successfully.");
 
