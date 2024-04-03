@@ -2,7 +2,7 @@ import { ElevenLabsClient } from "elevenlabs";
 import fs from "fs";
 
 const elevenlabs = new ElevenLabsClient({
-  apiKey: "481f2622885539e2d08a1a368d8dc5e6" // Defaults to process.env.ELEVENLABS_API_KEY
+  apiKey: process.env.TEXT_TO_SPEECH_KEY // Defaults to process.env.ELEVENLABS_API_KEY
 });
 
 async function saveAudioToFile(audioStream, filePath) {
@@ -24,7 +24,7 @@ export const textToSpeech = async (req, res, next, text) => {
   try {
     
     const audioStream = await elevenlabs.generate({
-      voice: "man medium",
+      voice: "Rachel",
       text: text,
       model_id: "eleven_multilingual_v2",
       speed: 0.5

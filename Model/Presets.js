@@ -23,4 +23,4 @@ const PresetsSchema = mongoose.Schema({
     },
 }, { timestamps: true });
 
-export default mongoose.model('Presets', PresetsSchema)
+export default mongoose.model('Presets', PresetsSchema, "Presets")
