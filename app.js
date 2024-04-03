@@ -22,7 +22,7 @@ app.listen(3000,()=>{
   console.log("Server listening on port 3000");
 });
 
-app.use('/audio', express.static('./Audio'));
+app.use('/audio', express.static('./uploads'));
 
 app.get('/', (req, res) => {
     res.json({ message: "Hello World!" });

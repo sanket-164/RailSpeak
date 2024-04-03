@@ -30,7 +30,7 @@ export const textToSpeech = async (req, res, next, text) => {
       speed: 0.5
     });
 
-    const filePath = `/Audio/${Date.now()}.mp3`;
+    const filePath = `/uploads/${Date.now()}.mp3`;
 
     // Write the audio content to a file
     await saveAudioToFile(audioStream,"." + filePath);
