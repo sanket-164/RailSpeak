@@ -1,9 +1,16 @@
 import { ElevenLabsClient } from "elevenlabs";
 import { promisify } from "util";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import fs from "fs";
 
+
+const storage = getStorage();
+const storageRef = ref(storage, 'some-child');
+
+// 'file' comes from the Blob or File API
+
 const elevenlabs = new ElevenLabsClient({
-  apiKey: "481f2622885539e2d08a1a368d8dc5e6" // Defaults to process.env.ELEVENLABS_API_KEY
+  apiKey: "a870307a428a48643acd4e3461985140" // Defaults to process.env.ELEVENLABS_API_KEY
 });
 
 // Promisify fs.writeFile for async/await syntax
@@ -13,6 +20,10 @@ async function saveAudioToFile(audioStream, filePath) {
   return new Promise((resolve, reject) => {
     const writableStream = fs.createWriteStream(filePath);
     audioStream.pipe(writableStream);
+    
+    uploadBytes(storageRef, writableStream).then((snapshot) => {
+      console.log('Uploaded a blob or file!');
+    });
 
     writableStream.on("finish", () => {
       resolve();
@@ -28,9 +39,9 @@ async function saveAudioToFile(audioStream, filePath) {
   try {
     const audioStream = await elevenlabs.generate({
       voice: "Rachel",
-    //   text: "HellHello HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello oHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello! 你好! Hola! नमस्ते! Bonjour! こんにちは! مرحبا! 안녕하세요! Ciao! Cześć! Привіт! வணக்கம்!",
-    text:"એક વાર ખુલે એવો ફોટો નો મોકલો",  
-    model_id: "eleven_multilingual_v2"
+      //   text: "HellHello HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello oHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello! 你好! Hola! नमस्ते! Bonjour! こんにちは! مرحبا! 안녕하세요! Ciao! Cześć! Привіт! வணக்கம்!",
+      text: "એક વાર ખુલે એવો ફોટો નો મોકલો",
+      model_id: "eleven_multilingual_v2"
     });
 
     // Write the audio content to a file

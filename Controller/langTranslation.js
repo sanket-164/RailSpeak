@@ -14,10 +14,10 @@ const insertLanguage = async (lang, translate) => {
 export const langTranslation = async (req, res, next) => {
     try {
 
-        const { station_id, title, tag, languages, original_text } = req.body;
+        const { title, tag, languages, original_text } = req.body;
 
-        if(!station_id || !title || !tag || !languages || !original_text) throw createHttpError(400, "Missing required fields");  
-        
+        if (!title || !tag || !languages || !original_text) throw createHttpError(400, "Missing required fields");
+
         const langTranslationsArray = [];
         let reqLangObjId = [];
 
@@ -48,7 +48,7 @@ export const langTranslation = async (req, res, next) => {
         const URL = await textToSpeech(req, res, next, langTranslations);
 
         const newPresets = new Presets({
-            station_id: station_id,
+            station_id: req.user.stationID,
             title: title,
             tag: tag,
             languages: reqLangObjId,
@@ -56,7 +56,8 @@ export const langTranslation = async (req, res, next) => {
             audio_url: URL
         });
 
-        const preset = await newPresets.save();
+        const newPreset = await newPresets.save();
+        const preset = await Presets.findById(newPreset._id).populate("languages");
 
         res.status(200).json(preset);
     } catch (error) {
