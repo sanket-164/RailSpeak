@@ -1,5 +1,12 @@
 import { ElevenLabsClient } from "elevenlabs";
 import fs from "fs";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const parentDir = path.resolve(__dirname, '..');
 
 const elevenlabs = new ElevenLabsClient({
   apiKey: process.env.TEXT_TO_SPEECH_KEY // Defaults to process.env.ELEVENLABS_API_KEY
@@ -30,10 +37,13 @@ export const textToSpeech = async (req, res, next, text) => {
       speed: 0.5
     });
 
-    const filePath = `/uploads/${Date.now()}.mp3`;
+    // const filePath = `/uploads/${Date.now()}.mp3`;
+
+    const folderPath = path.join(parentDir, 'uploads');
+    const filePath = path.join(folderPath, `${Date.now()}.mp3`);
 
     // Write the audio content to a file
-    await saveAudioToFile(audioStream,"." + filePath);
+    await saveAudioToFile(audioStream, filePath);
 
     console.log("Audio saved successfully.");
 
