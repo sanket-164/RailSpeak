@@ -1,9 +1,8 @@
 import { ElevenLabsClient } from "elevenlabs";
 import fs from "fs";
-import "dotenv/config"
 
 const elevenlabs = new ElevenLabsClient({
-  apiKey: process.env.TEXT_TO_SPEECH_API // Defaults to process.env.ELEVENLABS_API_KEY
+  apiKey: "481f2622885539e2d08a1a368d8dc5e6" // Defaults to process.env.ELEVENLABS_API_KEY
 });
 
 async function saveAudioToFile(audioStream, filePath) {

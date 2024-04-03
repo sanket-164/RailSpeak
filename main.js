@@ -29,7 +29,7 @@ async function saveAudioToFile(audioStream, filePath) {
     const audioStream = await elevenlabs.generate({
       voice: "Rachel",
     //   text: "HellHello HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello oHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello! 你好! Hola! नमस्ते! Bonjour! こんにちは! مرحبا! 안녕하세요! Ciao! Cześć! Привіт! வணக்கம்!",
-    text:"ભોસદિનાવ એક વાર ખુલે એવો ફોટો નો મોકલો",  
+    text:"એક વાર ખુલે એવો ફોટો નો મોકલો",  
     model_id: "eleven_multilingual_v2"
     });
 
