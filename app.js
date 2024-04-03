@@ -5,8 +5,9 @@ import createHttpError from 'http-errors';
 import morgan from 'morgan';
 import connectToDatabase from './database.js';
 
-import { langTranslation } from './Controller/langTranslation.js';
 import { errorHandler } from './Middleware/errorHandler.js';
+import { loginBroadcaster } from './Controller/loginBroadcaster.js';
+import broadcasterRoutes from './routes.js';
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.get('/', (req, res) => {
     res.json({ message: "Hello World!" });
 });
 
-app.post('/translate', langTranslation);
+app.use('/broadcaster', broadcasterRoutes);
 
 app.use((req, res, next) => {
     next(createHttpError(404, req.url + " URL not found"));

@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const PresetsSchema = mongoose.Schema({
+    station_id:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Station'
+    },
     title: {
         type: String,
         required: true
@@ -23,4 +27,4 @@ const PresetsSchema = mongoose.Schema({
     },
 }, { timestamps: true });
 
-export default mongoose.model('Presets', PresetsSchema, "Presets")
+export default mongoose.model('Presets', PresetsSchema, "AudioPreset")

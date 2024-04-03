@@ -3,6 +3,7 @@ import { textToSpeech } from './textToSpeech.js';
 
 import Presets from '../Model/Presets.js';
 import Language from '../Model/Language.js';
+import createHttpError from 'http-errors';
 
 const insertLanguage = async (lang, translate) => {
     const language = new Language({ language: lang, translated: translate });
@@ -12,46 +13,46 @@ const insertLanguage = async (lang, translate) => {
 
 export const langTranslation = async (req, res, next) => {
     try {
-        const langTranslationsArray = [];
 
-        // Now you can join the translated texts if needed
+        const { station_id, title, tag, languages, original_text } = req.body;
+
+        if(!station_id || !title || !tag || !languages || !original_text) throw createHttpError(400, "Missing required fields");  
+        
+        const langTranslationsArray = [];
         let reqLangObjId = [];
 
-        const body = req.body;
+        if (languages.length > 0) {
 
-        console.log(body.languages.length);
-
-        if (body.languages.length > 0) {
-
-            for (const lang of body.languages) {
-                const langTranslate = await translate(body.original_text, { to: lang });
+            for (const lang of languages) {
+                const langTranslate = await translate(original_text, { to: lang });
                 reqLangObjId.push(await insertLanguage(lang, langTranslate.text));
                 langTranslationsArray.push(langTranslate.text);
             }
 
         } else {
-            const guTranslate = await translate(body.original_text, { to: "gu" });
+            const guTranslate = await translate(original_text, { to: "gu" });
             reqLangObjId.push(await insertLanguage("gu", guTranslate.text));
             langTranslationsArray.push(guTranslate.text)
 
-            const hiTranslate = await translate(body.original_text, { to: "hi" });
+            const hiTranslate = await translate(original_text, { to: "hi" });
             reqLangObjId.push(await insertLanguage("hi", hiTranslate.text));
             langTranslationsArray.push(hiTranslate.text)
 
-            const mrTranslate = await translate(body.original_text, { to: "mr" });
+            const mrTranslate = await translate(original_text, { to: "mr" });
             reqLangObjId.push(await insertLanguage("mr", mrTranslate.text));
             langTranslationsArray.push(mrTranslate.text)
         }
 
-        const langTranslations = langTranslationsArray.join('          ');
-        console.log(langTranslations);
-        const URL = await textToSpeech(body, res, next, langTranslations);
+        const langTranslations = langTranslationsArray.join('\t');
+        // console.log(langTranslations);
+        const URL = await textToSpeech(req, res, next, langTranslations);
 
         const newPresets = new Presets({
-            title: body.title,
-            tag: body.tag,
+            station_id: station_id,
+            title: title,
+            tag: tag,
             languages: reqLangObjId,
-            original_text: body.original_text,
+            original_text: original_text,
             audio_url: URL
         });
 
@@ -61,7 +62,6 @@ export const langTranslation = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-
 }
 
 // translate(message, { to: "hi" })
