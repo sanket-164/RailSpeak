@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  password String
+}
+
+model Station {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  stationName String        @unique
+  BroadCaster BroadCaster[]
+  AudioPreset AudioPreset[]
+}
+
+model BroadCaster {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  stationID String  @db.ObjectId
+  username  String  @unique
+  password  String
+  Station   Station @relation(fields: [stationID], references: [id], onDelete: Cascade)
+
+  @@unique([stationID, username])
+}
+
+model Language {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  language      String
+  translated    String
+  AudioPreset   AudioPreset? @relation(fields: [audioPresetId], references: [id], onDelete: Cascade)
+  audioPresetId String?      @db.ObjectId
+}
+
+model AudioPreset {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  tag        Tag
+  station_id String @db.ObjectId
+
+  Station   Station    @relation(fields: [station_id], references: [id], onDelete: Cascade)
+  languages Language[]
+}
+
+enum Tag {
+  INFO
+  EMERGENCY
+}
